@@ -1,0 +1,3 @@
+- !grant
+  role: !group vault/$APP_SAFE/delegation/consumers
+  member: !host $APP_NAME/system:serviceaccount:$APP_NAMESPACE:$APP_SERVICE_ACCOUNT_NAME

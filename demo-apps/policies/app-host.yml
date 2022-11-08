@@ -1,12 +1,15 @@
-- !host
+- !policy
   id: $APP_NAME
-  annotations:
-    authn-k8s/namespace: $APP_NAMESPACE
-    authn-k8s/service-account: $APP_SERVICE_ACCOUNT_NAME
-    authn-k8s/authentication-container-name: $CONJUR_AUTH_K8S_CONTAINER_NAME
+  body:
+    - !group
 
-- !grant
-  roles:
-    - !group conjur/authn-k8s/$CONJUR_AUTHENTICATOR_ID/consumers
-  members:
-    - !host $APP_NAME
+    - &hosts
+      - !host
+        id: system:serviceaccount:$APP_NAMESPACE:$APP_SERVICE_ACCOUNT_NAME
+        annotations:
+          authn-jwt/dev-cluster/kubernetes.io/namespace: $APP_NAMESPACE
+          authn-jwt/dev-cluster/kubernetes.io/serviceaccount/name: $APP_SERVICE_ACCOUNT_NAME
+          authn/api-key: true
+    - !grant
+      role: !group
+      members: *hosts
