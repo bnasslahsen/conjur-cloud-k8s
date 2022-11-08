@@ -9,11 +9,11 @@ envsubst < policies/app-host.yml > app-host.yml.tmp
 conjur policy update -f app-host.yml.tmp -b data
 rm app-host.yml.tmp
 
-envsubst < grant-app-access.yaml > grant-app-access.yaml.tmp
+envsubst < policies/grant-app-access.yaml > grant-app-access.yaml.tmp
 conjur policy update -f grant-app-access.yaml.tmp -b conjur/authn-jwt/$CONJUR_AUTHENTICATOR_ID
 rm grant-app-access.yaml.tmp
 
-envsubst < safe-access.yaml > safe-access.yaml.tmp
+envsubst < policies/safe-access.yaml > safe-access.yaml.tmp
 conjur policy update -f safe-access.yaml.tmp -b data
 rm safe-access.yaml.tmp
 
