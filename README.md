@@ -39,23 +39,19 @@ This application requires access to an H2 database.
 cd setup/k8s
 ```
 
-###  Set up a Kubernetes Authenticator endpoint in Conjur / Enable the seed generation  / Initialize the CA (Conjur admin)
-```shell
-./1-load-k8s-authenticator-policies.sh
-```
-### Create Kubernetes resources for the k8s Authenticator (Kubernetes admin)
-```shell
-./2-create-k8s-authenticator-resources.sh
-```
-
 ###  Get Kubernetes API Access Information
 ```shell
-./3-get-k8s-infos.sh
+./1-get-k8s-infos.sh
+```
+
+###  Set up a Kubernetes Authenticator endpoint in Conjur / Enable the seed generation  / Initialize the CA (Conjur admin)
+```shell
+./2-load-k8s-authenticator-policies.sh
 ```
 
 ###  Configure Conjur to access the Kubernetes API (Conjur admin and Kubernetes cluster admin)
 ```shell
-./4-configure-conjur-for-k8s.sh
+./3-configure-conjur-for-k8s.sh
 ```
 
 Check Kubernetes Follower has the status, Ready.

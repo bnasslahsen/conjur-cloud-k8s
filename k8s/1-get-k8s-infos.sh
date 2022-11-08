@@ -9,5 +9,5 @@ echo "JWKS_URI=\"$JWKS_URI\"" > "$CONJUR_K8S_INFO"
 
 $KUBE_CLI get --raw $($KUBE_CLI get --raw /.well-known/openid-configuration | jq -r '.jwks_uri') > jwks.json
 
-ISSUER="$($KUBE_CLI get --raw /.well-known/openid-configuration | jq -r '.issuer')"
-echo "ISSUER=\"$ISSUER\"" >> "$CONJUR_K8S_INFO"
+SA_ISSUER="$($KUBE_CLI get --raw /.well-known/openid-configuration | jq -r '.issuer')"
+echo "SA_ISSUER=\"$SA_ISSUER\"" >> "$CONJUR_K8S_INFO"
