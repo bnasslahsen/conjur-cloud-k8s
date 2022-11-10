@@ -2,4 +2,4 @@
   roles:
     - !group apps
   members:
-    - !group /data/$APP_NAME
+    - !group /data/$APP_NAME_BASE_PATH

@@ -1,13 +1,13 @@
 - !policy
-  id: $APP_NAME
+  id: $APP_NAME_BASE_PATH
   body:
     - !group
     - &hosts
       - !host
         id: system:serviceaccount:$APP_NAMESPACE:$APP_SERVICE_ACCOUNT_NAME
         annotations:
-          authn-jwt/dev-cluster/kubernetes.io/namespace: $APP_NAMESPACE
-          authn-jwt/dev-cluster/kubernetes.io/serviceaccount/name: $APP_SERVICE_ACCOUNT_NAME
+          authn-jwt/$CONJUR_AUTHENTICATOR_ID/kubernetes.io/namespace: $APP_NAMESPACE
+          authn-jwt/$CONJUR_AUTHENTICATOR_ID/kubernetes.io/serviceaccount/name: $APP_SERVICE_ACCOUNT_NAME
           authn/api-key: true
     - !grant
       role: !group

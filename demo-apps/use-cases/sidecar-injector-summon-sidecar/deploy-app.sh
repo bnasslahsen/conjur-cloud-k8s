@@ -22,6 +22,8 @@ if "$USE_K8S_FOLLOWER" ; then
 else
   APPLIANCE_URL=$CONJUR_APPLIANCE_URL
 fi
+APPLIANCE_URL="$APPLIANCE_URL/api"
+CONJUR_APPLIANCE_URL="$CONJUR_APPLIANCE_URL/api"
 openssl s_client -connect "$CONJUR_MASTER_HOSTNAME":"$CONJUR_MASTER_PORT" \
   -showcerts </dev/null 2> /dev/null | \
   awk '/BEGIN CERTIFICATE/,/END CERTIFICATE/ {print $0}' \
@@ -31,7 +33,7 @@ $KUBE_CLI create configmap sidecar-injector-summon-sidecar-connect \
   --from-literal CONJUR_VERSION="5" \
   --from-literal CONJUR_APPLIANCE_URL="$CONJUR_APPLIANCE_URL" \
   --from-literal CONJUR_AUTHN_LOGIN="$APP_HOST_ID"  \
-  --from-literal CONJUR_AUTHN_URL="$APPLIANCE_URL"/authn-k8s/"$CONJUR_AUTHENTICATOR_ID" \
+  --from-literal CONJUR_AUTHN_URL="$APPLIANCE_URL"/authn-jwt/"$CONJUR_AUTHENTICATOR_ID" \
   --from-literal AUTHENTICATOR_ID="$CONJUR_AUTHENTICATOR_ID" \
   --from-file "CONJUR_SSL_CERTIFICATE=$CONJUR_SSL_CERTIFICATE"
 rm "$CONJUR_SSL_CERTIFICATE"

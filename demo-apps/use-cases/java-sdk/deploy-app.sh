@@ -15,6 +15,9 @@ openssl s_client -connect "$CONJUR_MASTER_HOSTNAME":"$CONJUR_MASTER_PORT" \
 
 $KUBE_CLI delete secret conjur-ssl-cert-base64 --ignore-not-found=true
 
+APPLIANCE_URL="$APPLIANCE_URL/api"
+CONJUR_APPLIANCE_URL="$CONJUR_APPLIANCE_URL/api"
+
 $KUBE_CLI create secret generic java-sdk-credentials  \
         --from-literal=conjur-authn-api-key="$CONJUR_AUTHN_API_KEY"  \
         --from-literal=conjur-account="$CONJUR_ACCOUNT" \
