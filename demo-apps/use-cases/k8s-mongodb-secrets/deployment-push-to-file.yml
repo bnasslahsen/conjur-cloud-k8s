@@ -19,7 +19,8 @@ spec:
         conjur.org/secrets-refresh-enabled: "true"
         conjur.org/secrets-refresh-interval: 10s
         conjur.org/secrets-destination: file
-        conjur.org/conjur-secrets-policy-path.test-app: secrets/test-app
+        conjur.org/jwt-token-path: /var/run/secrets/tokens/jwt
+        conjur.org/conjur-secrets-policy-path.test-app: data/bnl/jwt-apps/secrets
         conjur.org/conjur-secrets.test-app: |
           - mongo-uri
         conjur.org/secret-file-path.test-app: "./application.yml"
@@ -41,12 +42,6 @@ spec:
                 command:
                   - /usr/local/bin/conjur-secrets-provided.sh
           env:
-            - name: CONJUR_AUTHN_LOGIN
-              value: $APP_HOST_ID
-            - name: MY_POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
             - name: MY_POD_NAMESPACE
               valueFrom:
                 fieldRef:
@@ -55,14 +50,16 @@ spec:
             - configMapRef:
                 name: conjur-connect
           volumeMounts:
+            - name: conjur-status
+              mountPath: /conjur/status
+            - name: conjur-templates
+              mountPath: /conjur/templates
             - name: podinfo
               mountPath: /conjur/podinfo
             - name: conjur-secrets
               mountPath: /conjur/secrets
-            - name: conjur-templates
-              mountPath: /conjur/templates
-            - mountPath: /conjur/status
-              name: conjur-status
+            - name: jwt-token
+              mountPath: /var/run/secrets/tokens
         # Demo MongoDB App - No change in source code
         - name: $APP_MONGO_PUSH_FILE_SIDECAR
           image: $APP_IMAGE_NAME_BASIC_MONGODB
@@ -89,25 +86,28 @@ spec:
           ports:
             - containerPort: 8080
       volumes:
-        - name: podinfo
-          downwardAPI:
-            items:
-              - path: annotations
-                fieldRef:
-                  apiVersion: v1
-                  fieldPath: metadata.annotations
-            defaultMode: 420
-        - name: conjur-secrets
+        - name: conjur-status
           emptyDir:
             medium: Memory
         - name: conjur-templates
           configMap:
             name: spring-boot-templates
-        - name: conjur-status
+        - name: podinfo
+          downwardAPI:
+            items:
+              - path: "annotations"
+                fieldRef:
+                  fieldPath: metadata.annotations
+        - name: conjur-secrets
           emptyDir:
             medium: Memory
-      imagePullSecrets:
-        - name: ocirsecret
+        - name: jwt-token
+          projected:
+            sources:
+              - serviceAccountToken:
+                  path: jwt
+                  expirationSeconds: 6000
+                  audience: conjur
 ---
 apiVersion: v1
 kind: Service

@@ -8,15 +8,16 @@ $KUBE_CLI config set-context --current --namespace="$APP_NAMESPACE"
 
 $KUBE_CLI delete secret java-sdk-credentials --ignore-not-found=true
 
+APPLIANCE_URL=$CONJUR_APPLIANCE_URL
+export CONJUR_APP_SERVICE_ACCOUNT_NAME=$CONJUR_SERVICE_ACCOUNT_NAME
+
 openssl s_client -connect "$CONJUR_MASTER_HOSTNAME":"$CONJUR_MASTER_PORT" \
   -showcerts </dev/null 2> /dev/null | \
   awk '/BEGIN CERTIFICATE/,/END CERTIFICATE/ {print $0}' \
   > "$CONJUR_SSL_CERTIFICATE"
+cat conjur-cloud-ca.pem >> "$CONJUR_SSL_CERTIFICATE"
 
 $KUBE_CLI delete secret conjur-ssl-cert-base64 --ignore-not-found=true
-
-APPLIANCE_URL="$APPLIANCE_URL/api"
-CONJUR_APPLIANCE_URL="$CONJUR_APPLIANCE_URL/api"
 
 $KUBE_CLI create secret generic java-sdk-credentials  \
         --from-literal=conjur-authn-api-key="$CONJUR_AUTHN_API_KEY"  \

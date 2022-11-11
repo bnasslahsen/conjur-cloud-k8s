@@ -19,7 +19,8 @@ spec:
         conjur.org/secrets-refresh-enabled: "true"
         conjur.org/secrets-refresh-interval: 10s
         conjur.org/secrets-destination: file
-        conjur.org/conjur-secrets-policy-path.test-app: secrets/test-app
+        conjur.org/jwt-token-path: /var/run/secrets/tokens/jwt
+        conjur.org/conjur-secrets-policy-path.test-app: data/bnl/jwt-apps/secrets
         conjur.org/conjur-secrets.test-app: |
           - mongo-uri
         conjur.org/secret-file-path.test-app: "./application.yml"
@@ -39,12 +40,6 @@ spec:
                 command:
                   - /usr/local/bin/conjur-secrets-provided.sh
           env:
-            - name: CONJUR_AUTHN_LOGIN
-              value: $APP_HOST_ID
-            - name: MY_POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
             - name: MY_POD_NAMESPACE
               valueFrom:
                 fieldRef:
@@ -53,12 +48,16 @@ spec:
             - configMapRef:
                 name: conjur-connect
           volumeMounts:
+            - name: conjur-status
+              mountPath: /conjur/status
             - name: podinfo
               mountPath: /conjur/podinfo
             - name: conjur-secrets
               mountPath: /conjur/secrets
             - name: conjur-templates
               mountPath: /conjur/templates
+            - name: jwt-token
+              mountPath: /var/run/secrets/tokens
             - name: refresh-config
               mountPath: /conjur/status/health-refresh-$KUBE_PLATFORM.sh
               subPath: health-refresh-$KUBE_PLATFORM.sh
@@ -86,6 +85,9 @@ spec:
           ports:
             - containerPort: 8080
       volumes:
+        - name: conjur-status
+          emptyDir:
+            medium: Memory
         - name: podinfo
           downwardAPI:
             items:
@@ -104,8 +106,13 @@ spec:
           configMap:
             name: push-to-file-refresh-config
             defaultMode: 0755
-      imagePullSecrets:
-        - name: ocirsecret
+        - name: jwt-token
+          projected:
+            sources:
+              - serviceAccountToken:
+                  path: jwt
+                  expirationSeconds: 6000
+                  audience: conjur
 ---
 apiVersion: v1
 kind: Service

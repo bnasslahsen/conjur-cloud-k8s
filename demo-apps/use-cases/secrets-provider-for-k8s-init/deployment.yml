@@ -74,8 +74,6 @@ spec:
                   path: jwt
                   expirationSeconds: 6000
                   audience: conjur
-      imagePullSecrets:
-        - name: ocirsecret
 ---
 apiVersion: v1
 kind: Service
