@@ -39,15 +39,16 @@ spec:
         - image: $CONJUR_AUTHN_K8S_IMAGE
           imagePullPolicy: Always
           name: $CONJUR_AUTH_K8S_CONTAINER_NAME
+          volumeMounts:
+            - mountPath: /run/conjur
+              name: conjur-access-token
+            - name: jwt-token
+              mountPath: /var/run/secrets/tokens
           env:
-            - name: CONJUR_AUTHN_LOGIN
-              value: $APP_HOST_ID
+            - name: JWT_TOKEN_PATH
+              value: /var/run/secrets/tokens/jwt
             - name: CONTAINER_MODE
               value: init
-            - name: MY_POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
             - name: MY_POD_NAMESPACE
               valueFrom:
                 fieldRef:
@@ -55,16 +56,15 @@ spec:
           envFrom:
             - configMapRef:
                 name: conjur-connect
-          volumeMounts:
-            - mountPath: /run/conjur
-              name: conjur-access-token
-            - mountPath: /etc/conjur/ssl
-              name: conjur-client-ssl
       volumes:
+        - name: jwt-token
+          projected:
+            sources:
+              - serviceAccountToken:
+                  path: jwt
+                  expirationSeconds: 6000
+                  audience: conjur
         - name: conjur-access-token
-          emptyDir:
-            medium: Memory
-        - name: conjur-client-ssl
           emptyDir:
             medium: Memory
         - name: summon-config
