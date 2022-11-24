@@ -8,7 +8,6 @@ $KUBE_CLI config set-context --current --namespace="$APP_NAMESPACE"
 
 $KUBE_CLI delete secret java-sdk-credentials --ignore-not-found=true
 
-APPLIANCE_URL=$CONJUR_APPLIANCE_URL
 export CONJUR_APP_SERVICE_ACCOUNT_NAME=$CONJUR_SERVICE_ACCOUNT_NAME
 
 openssl s_client -connect "$CONJUR_MASTER_HOSTNAME":"$CONJUR_MASTER_PORT" \
