@@ -9,5 +9,5 @@ conjur policy update -f aks-hosts.yml.tmp -b data/bnl/aks-team | tee -a aks-host
 rm aks-hosts.yml.tmp
 
 envsubst < policies/aks-hosts-grants.yml > aks-hosts-grants.yml.tmp
-conjur policy update -f policies/aks-hosts-grants.yml.tmp -b data/vault/bnl-aks-safe
+conjur policy update -f aks-hosts-grants.yml.tmp -b data/vault/bnl-aks-safe
 rm aks-hosts-grants.yml.tmp
