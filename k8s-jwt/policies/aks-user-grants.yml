@@ -1,3 +1,3 @@
 - !grant
   role: !group bnl-aks-safe-admins
-  member: !group /data/bnl/aks-team/aks-apps
+  member: !group /data/bnl/aks-team/managers
