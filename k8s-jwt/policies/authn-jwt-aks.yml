@@ -21,18 +21,19 @@
 
     # Group of applications that can authenticate using this JWT Authenticator
     - !group apps
-
     - !permit
       role: !group apps
       privilege: [ read, authenticate ]
       resource: !webservice
 
     - !webservice status
-
     # Group of users who can check the status of the JWT Authenticator
     - !group operators
-
     - !permit
       role: !group operators
       privilege: [ read ]
       resource: !webservice status
+
+- !grant
+  role: !group $CONJUR_AUTHENTICATOR_ID/apps
+  member: !group /$APP_NAME_BASE_PATH

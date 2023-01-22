@@ -1,7 +1,8 @@
 - !policy
-  id: $APP_NAME_BASE_PATH
+  id: aks-apps
   body:
     - !group
+      id: aks-apps
     - &hosts
       - !host
         id: system:serviceaccount:$APP_NAMESPACE:$APP_SERVICE_ACCOUNT_NAME

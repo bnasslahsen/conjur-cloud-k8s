@@ -1,0 +1,6 @@
+# conjur policy update -f root-branch.yml -b data
+
+- !policy
+  id: bnl
+  annotations:
+    description: All Badr policies
