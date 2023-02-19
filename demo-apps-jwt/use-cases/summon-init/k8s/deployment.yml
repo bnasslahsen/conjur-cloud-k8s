@@ -18,7 +18,7 @@ spec:
       serviceAccountName: $APP_SUMMON_INIT-sa
       containers:
         - name: $APP_SUMMON_INIT
-          image: $APP_IMAGE_NAME_SUMMON
+          image: $APP_IMAGE_NAME_BASIC
           imagePullPolicy: Always
           command: ["summon", "--provider", "summon-conjur" ,"-f", "/etc/summon/secrets.yml", "java", "-jar", "/app/target/conjur-k8s-demo-3.0.jar" ]
           env:
