@@ -1,0 +1,17 @@
+# conjur policy update -f k8s-branch.yml -b data/bnl
+- !policy
+  id: $K8S_PLATFORM-team
+  annotations:
+    description: All K8S policies
+  body:
+    - !group managers
+    - !group
+      id: $K8S_PLATFORM-apps
+      owner: !group managers
+    - !grant
+      role: !group managers
+      member: !user /bnl-$K8S_PLATFORM-user@cyberark.cloud.3433
+    - !permit
+      role: !group managers
+      privileges: [ read,update,create ]
+      resource: !policy

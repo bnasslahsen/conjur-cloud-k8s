@@ -1,0 +1,3 @@
+- !grant
+  role: !group bnl-$K8S_PLATFORM-safe-admins
+  member: !group /data/bnl/$K8S_PLATFORM-team/managers

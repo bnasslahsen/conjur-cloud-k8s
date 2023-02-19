@@ -1,0 +1,14 @@
+- !policy
+  id: $K8S_PLATFORM-apps
+  owner: !group managers
+  body:
+    - &hosts
+      - !host
+        id: system:serviceaccount:$APP_NAMESPACE:$APP_NAME_SECRETLESS_MYSQL-sa
+        annotations:
+          authn-jwt/$CONJUR_AUTHENTICATOR_ID/kubernetes.io/namespace: $APP_NAMESPACE
+          authn-jwt/$CONJUR_AUTHENTICATOR_ID/kubernetes.io/serviceaccount/name: $APP_NAME_SECRETLESS_MYSQL-sa
+          authn/api-key: true
+    - !grant
+      role: !group
+      members: *hosts
