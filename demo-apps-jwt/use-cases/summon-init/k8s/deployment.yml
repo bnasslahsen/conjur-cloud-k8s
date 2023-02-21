@@ -29,7 +29,7 @@ spec:
             - name: SPRING_PROFILES_ACTIVE
               value: summon
           ports:
-            - containerPort: 8080
+            - containerPort: 8181
           envFrom:
             - configMapRef:
                 name: conjur-connect
@@ -85,7 +85,7 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: 8080
+    - port: 8181
       nodePort: 32084
   selector:
     app: $APP_SUMMON_INIT

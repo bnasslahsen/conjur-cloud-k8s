@@ -45,7 +45,7 @@ spec:
             - name: conjur-templates
               mountPath: /conjur/templates
           ports:
-            - containerPort: 8080
+            - containerPort: 8181
         - image: $SECRETS_PROVIDER_IMAGE
           imagePullPolicy: IfNotPresent
           name: configurator
@@ -106,7 +106,7 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: 8080
+    - port: 8181
       nodePort: 32092
   selector:
     app: $APP_PUSH_FILE_SIDECAR

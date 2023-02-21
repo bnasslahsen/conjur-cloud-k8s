@@ -10,8 +10,8 @@ $K8S_CLI delete serviceaccount "$APP_SERVICE_ACCOUNT_NAME" --ignore-not-found=tr
 $K8S_CLI create serviceaccount "$APP_SERVICE_ACCOUNT_NAME"
 
 # DB SECRETS
-kubectl delete secret db-credentials --ignore-not-found=true
-kubectl create secret generic db-credentials \
+$K8S_CLI delete secret db-credentials --ignore-not-found=true
+$K8S_CLI create secret generic db-credentials \
     --from-literal=url=jdbc:h2:mem:testdb \
     --from-literal=username=h2-user  \
     --from-literal=password=

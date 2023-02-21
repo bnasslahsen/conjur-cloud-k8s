@@ -53,7 +53,7 @@ spec:
             - name: LOGGING_LEVEL_ORG_CYBERARK
               value: DEBUG
             - name: SERVER_PORT
-              value: '8080'
+              value: '8181'
             - name: APP_SECRET_URL
               value: $APP_SECRET_ADDRESS_PATH
             - name: APP_SECRET_USERNAME
@@ -61,7 +61,7 @@ spec:
             - name: APP_SECRET_PASSWORD
               value: $APP_SECRET_PASSWORD_PATH
           ports:
-            - containerPort: 8080
+            - containerPort: 8181
 ---
 apiVersion: v1
 kind: Service
@@ -71,7 +71,7 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: 8080
+    - port: 8181
       nodePort: 32094
   selector:
     app: $APP_JAVA_SDK

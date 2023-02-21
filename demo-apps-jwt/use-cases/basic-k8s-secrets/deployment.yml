@@ -22,7 +22,7 @@ spec:
           imagePullPolicy: Always
           env:
             - name: JAVA_TOOL_OPTIONS
-              value: "-Xmx64m -XX:MaxMetaspaceSize=64m -Dspring.main.lazy-initialization=true -XX:TieredStopAtLevel=1 -XX:+UseSerialGC"
+              value: "-Xmx128m -XX:MaxMetaspaceSize=128m -Dspring.main.lazy-initialization=true -XX:TieredStopAtLevel=1 -XX:+UseSerialGC"
             - name: DB_URL
               valueFrom:
                 secretKeyRef:
@@ -39,7 +39,7 @@ spec:
                   name: db-credentials
                   key: password
           ports:
-            - containerPort: 8080
+            - containerPort: 8181
 ---
 apiVersion: v1
 kind: Service
@@ -49,7 +49,7 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: 8080
+    - port: 8181
       nodePort: 32080
   selector:
     app: $APP_NAME
