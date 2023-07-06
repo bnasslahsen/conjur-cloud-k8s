@@ -17,7 +17,6 @@
     - !variable issuer
     - !variable token-app-property
     - !variable identity-path
-    - !variable audience
 
     # Group of applications that can authenticate using this JWT Authenticator
     - !group apps

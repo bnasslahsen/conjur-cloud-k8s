@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: demo-app-summon-init
+  name: demo-app-summon-init
+  namespace: $APP_NAMESPACE
+spec:
+  selector:
+    matchLabels:
+      app: demo-app-summon-init
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: demo-app-summon-init
+    spec:
+      serviceAccountName: demo-app-summon-init-sa
+      containers:
+        - name: demo-app-summon-init
+          image: bnasslahsen/conjur-spring-boot-demos-summon
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: conjur-connect-summon
+          volumeMounts:
+            - mountPath: /etc/summon
+              name: summon-config
+              readOnly: true
+      volumes:
+        - name: summon-config
+          configMap:
+            name: summon-config-init
+            defaultMode: 420
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-app-summon-init
+  namespace: $APP_NAMESPACE
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      nodePort: 32084
+  selector:
+    app: demo-app-summon-init
+---

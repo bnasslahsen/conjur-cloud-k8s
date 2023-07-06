@@ -10,7 +10,7 @@
       owner: !group managers
     - !grant
       role: !group managers
-      member: !user /bnl-$K8S_PLATFORM-user@cyberark.cloud.3433
+      member: !user /bnl-$K8S_PLATFORM-user@cyberark.cloud.8128
     - !permit
       role: !group managers
       privileges: [ read,update,create ]
