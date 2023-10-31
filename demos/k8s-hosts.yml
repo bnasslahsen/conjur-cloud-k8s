@@ -1,6 +1,10 @@
 # conjur policy update -f k8s-hosts.yml -b data/bnl
 - &hosts
   - !host
+    id: demo-app-api-key
+    annotations:
+      authn/api-key: true
+  - !host
     id: system:serviceaccount:$APP_NAMESPACE:$APP_NAME-jwt-sa
     annotations:
       authn-jwt/$CONJUR_AUTHENTICATOR_ID/kubernetes.io/namespace: $APP_NAMESPACE
