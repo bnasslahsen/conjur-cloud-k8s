@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: $APP_NAME-jwt
+  namespace: $APP_NAMESPACE
+  labels:
+    app: $APP_NAME-jwt
+spec:
+  selector:
+    matchLabels:
+      app: $APP_NAME-jwt
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: $APP_NAME-jwt
+    spec:
+      serviceAccountName: $APP_NAME-jwt-sa
+      containers:
+        - name: $APP_NAME-jwt
+          image: bnasslahsen/conjur-spring-boot-demos
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: conjur-connect-spring-jwt
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: $APP_NAME-jwt
+  namespace: $APP_NAMESPACE
+spec:
+  type: NodePort
+  ports:
+    - port: 8181
+      nodePort: 32095
+  selector:
+    app: $APP_NAME-jwt
+---

@@ -20,18 +20,9 @@ cd k8s-jwt
 
 - Declare K8s authenticator - AS Conjur Admin
 ```shell
-./1-load-k8s-authenticator-policies.sh
+./load-k8s-authenticator-policies.sh
 ```
 
-- GET K8s Infos - AS K8S Admin
-```shell
-./2-get-k8s-infos.sh
-```
-
-- Configure K8s authenticator - AS Conjur Admin
-```shell
-./3-configure-conjur-for-k8s.sh
-```
 
 ## Configure and deploy the sample applications
 

@@ -1,0 +1,3 @@
+- !grant
+  role: !group delegation/consumers
+  member: !group /data/$APP_GROUP

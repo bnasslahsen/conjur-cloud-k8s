@@ -1,3 +1,0 @@
-- !grant
-  role: !group delegation/consumers
-  member: !group /$APP_NAME_BASE_PATH

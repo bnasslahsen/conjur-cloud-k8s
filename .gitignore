@@ -148,6 +148,7 @@ Desktop.ini
 .eslintcache
 # Ignore Gradle project-specific cache directory
 .gradle
+.env
 
 # Ignore Gradle build output directory
 build
