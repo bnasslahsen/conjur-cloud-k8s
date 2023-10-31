@@ -24,13 +24,7 @@ kubectl create configmap conjur-connect-spring-jwt \
   --from-literal CONJUR_JWT_TOKEN_PATH="/var/run/secrets/kubernetes.io/serviceaccount/token" \
   --from-literal LOGGING_LEVEL_COM_CYBERARK=DEBUG  \
   --from-literal SPRING_MAIN_CLOUD_PLATFORM="NONE" \
-  --from-file "CONJUR_SSL_CERTIFICATE=conjur.pem" \
-  --from-literal SPRING_SQL_INIT_PLATFORM="mysql" \
-  --from-literal DB_SECRET_ADDRESS="data/vault/bnl-k8s-safe/mysql-test-db/address" \
-  --from-literal DB_SECRET_PORT="data/vault/bnl-k8s-safe/mysql-test-db/Port" \
-  --from-literal DB_SECRET_DATABASE="data/vault/bnl-k8s-safe/mysql-test-db/Database" \
-  --from-literal DB_SECRET_USERNAME="data/vault/bnl-k8s-safe/mysql-test-db/username" \
-  --from-literal DB_SECRET_PASSWORD="data/vault/bnl-k8s-safe/mysql-test-db/password"
+  --from-file "CONJUR_SSL_CERTIFICATE=conjur.pem" 
 
 # DEPLOYMENT
 envsubst < deployment.yml | kubectl replace --force -f -
