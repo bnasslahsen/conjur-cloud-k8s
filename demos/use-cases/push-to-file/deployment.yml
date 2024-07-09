@@ -25,7 +25,7 @@ spec:
           - DSN
         conjur.org/secret-file-format.$APP_NAME: "template"
         conjur.org/secret-file-path.$APP_NAME: "./application.yml"
-        conjur.org/secrets-refresh-interval: 10s
+        conjur.org/secrets-refresh-interval: 60s
         conjur.org/secrets-refresh-enabled: "true"
     spec:
       serviceAccountName: $APP_NAME-push-to-file-sidecar-sa

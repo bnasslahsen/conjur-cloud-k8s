@@ -1,0 +1,144 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: conjur-eso-sa
+  namespace: bnl-demo-app-ns
+---
+# Creating a role for consuming secrets
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: conjur-demo-allow-to-read-secrets
+  namespace: bnl-demo-app-ns
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: [ "get", "update" ]
+---
+# Binding the role to the SA
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: bnl-demo-app-ns
+  name: conjur-demo-allow-to-read-secrets-binding
+subjects:
+  - kind: ServiceAccount
+    namespace: bnl-demo-app-ns
+    name: conjur-eso-sa
+roleRef:
+  kind: Role
+  apiGroup: rbac.authorization.k8s.io
+  name: conjur-demo-allow-to-read-secrets
+
+
+---
+# Conjur External Secret Store
+apiVersion: external-secrets.io/v1beta1
+kind: SecretStore
+metadata:
+  name: conjur
+  namespace: bnl-demo-app-ns
+spec:
+  provider:
+    conjur:
+      # Service URL
+      url: https://emeadevops.secretsmgr.cyberark.cloud/api
+      auth:
+        jwt:
+          # conjur account
+          account: conjur
+          # The authn-jwt service ID
+          serviceID: ocp-cluster-dev
+          serviceAccountRef:
+            name: conjur-eso-sa
+---
+# Create external secrets
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: conjur-jwt-eso
+  namespace: bnl-demo-app-ns
+spec:
+  refreshInterval: 10s
+  secretStoreRef:
+    # This name must match the metadata.name in the `SecretStore`
+    name: conjur
+    kind: SecretStore
+  target:
+    name: conjur-eso
+  dataFrom:
+    - find:
+        # You can use *either* `name` or `tags` to filter the secrets.
+        name:
+          # Match all secrets in the bnl-k8s-safe branch
+          regexp: "^data/vault/bnl-k8s-safe/.+$"
+  data:
+    - secretKey: username
+      remoteRef:
+        key: data/vault/bnl-k8s-safe/mysql-test-db/username
+    - secretKey: password
+      remoteRef:
+        key: data/vault/bnl-k8s-safe/mysql-test-db/password
+    - secretKey: DSN
+      remoteRef:
+        key: data/vault/bnl-k8s-safe/mysql-test-db/DSN
+
+
+
+---
+# Deployment for demo application
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: $APP_NAME-eso
+  namespace: $APP_NAMESPACE
+  labels:
+    app: $APP_NAME-eso
+spec:
+  selector:
+    matchLabels:
+      app: $APP_NAME-eso
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: $APP_NAME-eso
+    spec:
+      serviceAccountName: $APP_NAME-eso-sa
+      containers:
+        - name: $APP_NAME-eso
+          image: bnasslahsen/conjur-spring-boot-demos
+          imagePullPolicy: Never
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: conjur-eso
+                  key: DSN
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: conjur-eso
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: conjur-eso
+                  key: password
+            - name: SPRING_MAIN_CLOUD_PLATFORM
+              value: "NONE"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: $APP_NAME-eso
+  namespace: $APP_NAMESPACE
+spec:
+  type: NodePort
+  ports:
+    - port: 8181
+      nodePort: 32095
+  selector:
+    app: $APP_NAME-eso
+---
